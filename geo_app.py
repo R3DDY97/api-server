@@ -5,13 +5,12 @@ import os
 import json
 from urllib.parse import unquote
 
-GEO_DATA = os.path.abspath('in_geo1.json')
+GEO_DATA = os.path.abspath('src/in_geo1.json')
 
 def load_database():
     '''load  indian cities pincodes and GEO coords'''
     with open(GEO_DATA, "r") as geo_file:
         geo_dict = json.load(geo_file)
-
     return geo_dict
 
 GEO_DICT = load_database()
