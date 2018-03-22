@@ -3,6 +3,8 @@
 
 import os
 import asyncio
+# from email import utils
+from email.utils import (CRLF, formatdate)
 from geo_app import  (load_database, create_response_body)
 
 def parse_request_header(req_header_stream):
@@ -16,10 +18,18 @@ def parse_request_header(req_header_stream):
     return None
 
 def create_response(req_query):
-    response_body = create_response_body(req_query).encode()
+    response_body = create_response_body(req_query)
+    # res_json, response_body = create_response_body(req_query)
     print(response_body)
-    response_hdr = b"HTTP/1.1 200 OK\r\n\r\n"
-    response = response_hdr + response_body
+    res_hdr_dict = {"Allow": "GET", "Content-Type": 'application/json',
+                    "Content-Length": len(response_body), "Content-Language": "en",
+                    "Date" : formatdate(usegmt=True), "Server": "V3NK3Y"}
+    # response_hdr = b"HTTP/1.1 200 OK\r\n"
+    res_line = "HTTP/1.1 200 OK" + CRLF
+    res_hdr = "".join(["{0}: {1}{2}".format(i[0], i[1], CRLF) for i in res_hdr_dict.items()])
+    response_header = res_line + res_hdr
+    response = (response_header + CRLF + response_body).encode()
+    # response = (res_line + CRLF + response_body).encode()
     return response
 
 async def http_server(reader, writer):
