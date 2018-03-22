@@ -10,7 +10,7 @@ def parse_request_header(req_header_stream):
     req_header = dict(zip(["method", "path", "version"], req_line.split()))
     req_header["header"] = dict([hdr.split(": ") for hdr in header_lines if ":" in hdr])
     query = req_header["path"].strip("/")
-    print(req_line, query)
+    # print(req_line, query)
     if query:
         return query
     return None
@@ -23,6 +23,7 @@ def create_response(req_query):
     return response
 
 async def http_server(reader, writer):
+    ''''coroutine http server '''
     req_header_stream = await reader.readuntil(b"\r\n\r\n")
     req_header_stream = req_header_stream.decode()
     req_query = parse_request_header(req_header_stream)
@@ -32,7 +33,7 @@ async def http_server(reader, writer):
     writer.close()
 
 def run_server(host="0.0.0.0", port=8000, loop=None):
-
+    '''running server using async concurrency'''
     loop = asyncio.get_event_loop()
     single_request = asyncio.start_server(http_server, host, port)
     api_server = loop.run_until_complete(single_request)
@@ -46,8 +47,6 @@ def run_server(host="0.0.0.0", port=8000, loop=None):
     api_server.close()
     loop.run_until_complete(api_server.wait_closed())
     loop.close()
-
-
 
 if __name__ == '__main__':
     os.system("clear||cls")
